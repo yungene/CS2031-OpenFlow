@@ -1,3 +1,4 @@
+package cistiakj.Packets;
 
 public interface PacketTypes {
 	enum OPF_TYPE {

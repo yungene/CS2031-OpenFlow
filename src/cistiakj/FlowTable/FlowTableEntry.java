@@ -1,9 +1,10 @@
+package cistiakj.FlowTable;
 
 public class FlowTableEntry {
 	
 	private int inInterfaceId;
 	private int outInterfaceId;
-	private int dest;
+	private int dest;	//port or ip address
 	private int src;
 	private int routerId;
 
