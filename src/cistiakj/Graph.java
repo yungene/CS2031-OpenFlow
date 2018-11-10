@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public class Graph<V extends Comparable<V>> {
 
+	// u-v => u->(v,w[u-v])
 	Map<V, ArrayList<Pair<V,Integer>>> adj;	//adjacency list
 	Map<Pair<V,V>, Integer> weight;	//weight function for edge (u,v)
 	

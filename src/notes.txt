@@ -1,0 +1,7 @@
+we need 1)flow table
+		2) connection to controller
+		3) means of communicating with controller - i.e. OPF packets and logic
+
+thus a router needs at least 2 separate threads, one for listening to packets and forwarding them, and another one for communication with controller
+
+need to store destination address and address of a next hop
