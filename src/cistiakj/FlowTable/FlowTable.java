@@ -2,11 +2,16 @@ package cistiakj.FlowTable;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *
+ * @param <Entry>
+ */
 public class FlowTable<Entry> {
 
 	// maps (dest,src) -> table entry
-	// dest and src are ints, e.g. can be port numbersif on localhost or ip adresses
+	// dest and src are ints, e.g. can be port numbers if on localhost or ip adresses
 	Map<Integer, Map<Integer, Entry>> flowTable;
 
 	public FlowTable() {

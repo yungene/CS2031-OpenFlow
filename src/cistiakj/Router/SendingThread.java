@@ -23,6 +23,7 @@ public class SendingThread implements Runnable, Constants, PacketTypes {
 				DatagramPacket pk = gp.toDatagramPacket();
 				pk.setSocketAddress(gp.getFinalAddr());
 				//parent.socket.send(pk);
+				
 				// get interface from which to send
 				int outId = parent.getNextHop(gp.getFinalDest());
 				parent.interfaces.get(outId).send(parent.socket, pk);

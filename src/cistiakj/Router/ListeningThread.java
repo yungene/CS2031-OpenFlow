@@ -30,7 +30,7 @@ public class ListeningThread implements Runnable, Constants, PacketTypes{
 					continue;
 				}
 				int finalDest = gp.getFinalDest();
-				if(finalDest == parent.srcPort) {	// from the controller
+				if(finalDest == parent.srcPort) {	// from the controller intended for router
 					parent.controllerQueue.put(gp);
 				}else {
 					// not inteded for the router => need to forward

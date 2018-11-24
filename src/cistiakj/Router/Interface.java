@@ -11,7 +11,7 @@ import java.net.DatagramSocket;
  * An abstraction to represent an interface of a node =  direct link between the node and its neightbour
  */
 public class Interface {
-	private int port;
+	private int port; //port of a neighbour
 	private int metric;	// weight of an edge in a graph
 	private int id;
 	public Interface( int id,int port, int metric) {

@@ -8,6 +8,7 @@ public interface PacketTypes {
 		OFPT_ECHO_REQUEST,
 		OFPT_ECHO_REPLY,
 		OFPT_EXPERIMENTER,
+		OFPT_ACK,
 		/* Switch configuration messages. */
 		OFPT_FEATURES_REQUEST ,
 		OFPT_FEATURES_REPLY,
