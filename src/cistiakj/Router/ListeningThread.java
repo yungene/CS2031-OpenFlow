@@ -7,12 +7,14 @@ import java.nio.channels.SocketChannel;
 
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
+import cistiakj.Packets.OFPacket;
 import cistiakj.Packets.PacketTypes;
 
-public class ListeningThread implements Runnable, Constants, PacketTypes{
-	
+public class ListeningThread implements Runnable, Constants, PacketTypes {
+
 	Router parent;
 	DatagramSocket socket;
+
 	public ListeningThread(Router parent) {
 		super();
 		this.parent = parent;
@@ -21,28 +23,34 @@ public class ListeningThread implements Runnable, Constants, PacketTypes{
 
 	@Override
 	public void run() {
-		for(;;) {
+		for (;;) {
 			try {
 				DatagramPacket pk = new DatagramPacket(new byte[PACKETSIZE], PACKETSIZE);
 				socket.receive(pk);
 				GenericPacket gp = GenericPacket.fromDatagramPacket(pk);
-				if(gp == null) {
+				if (gp == null) {
 					continue;
 				}
 				int finalDest = gp.getFinalDest();
-				if(finalDest == parent.srcPort) {	// from the controller intended for router
-					parent.controllerQueue.put(gp);
-				}else {
+				if (finalDest == parent.srcPort) { // from the controller intended for router
+					DatagramPacket dtpk = gp.getPayload();
+					if (dtpk != null) {
+						OFPacket ofpk = OFPacket.fromDatagramPacket(gp.getPayload());
+						if (ofpk != null) {
+							parent.controllerQueue.put(ofpk);
+						}
+					}
+				} else {
 					// not inteded for the router => need to forward
-					if(parent.hasRoute(finalDest)) {
+					if (parent.hasRoute(finalDest)) {
 						parent.sendQueue.put(gp);
-					}else {
-						//need to find address
+					} else {
+						// need to find address
 						parent.resolveQueue.put(gp);
 					}
 				}
-				
-			}catch(Exception e) {
+
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

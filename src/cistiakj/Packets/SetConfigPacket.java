@@ -7,7 +7,7 @@ import java.io.ObjectOutputStream;
 import cistiakj.FlowTable.RouterFlowTableEntry;
 
 public class SetConfigPacket extends OFPacket{
-	RouterFlowTableEntry[] entries;
+	public RouterFlowTableEntry[] entries;
 	public SetConfigPacket(int version, int connectionId, int seq,RouterFlowTableEntry[] entries) {
 		super(OPF_TYPE.OFPT_SET_CONFIG, version, connectionId,seq);
 		this.entries = entries;

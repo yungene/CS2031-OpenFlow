@@ -171,7 +171,7 @@ public abstract class OFPacket implements Constants, PacketTypes{
 
 	// public toString();
 	public String toString() {
-		return String.format("SPB : OPF_TYPE %s, version: %d, connectionId: %d, seqNo: %d %n",
+		return String.format("OF : OPF_TYPE %s, version: %d, connectionId: %d, seqNo: %d %n",
 				type.toString(),version,connectionId,seq);
 	}
 
