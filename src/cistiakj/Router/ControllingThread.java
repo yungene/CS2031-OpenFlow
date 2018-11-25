@@ -42,8 +42,9 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 		try {
 			connect();
 			for (;;) {
-				processController();
-				gp = parent.resolveQueue.poll(PACKET_WAITING_TIME_IN_SEC, TimeUnit.SECONDS);
+				//processController();
+				//gp = parent.resolveQueue.poll(PACKET_WAITING_TIME_IN_SEC, TimeUnit.SECONDS);
+				gp = parent.resolveQueue.poll();
 				processController();
 				if (gp == null) {
 					continue;
