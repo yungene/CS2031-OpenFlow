@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
  *
  */
 public class PacketInPacket extends OFPacket{
-	GenericPacket packet;
+	public GenericPacket packet;
 
 	public PacketInPacket(int version, int connectionId, int seq, GenericPacket packet) {
 		super(OPF_TYPE.OFPT_SET_CONFIG, version, connectionId, seq);
