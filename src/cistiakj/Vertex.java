@@ -9,6 +9,12 @@ package cistiakj;
 public class Vertex implements Comparable<Vertex> {
 	
 	private int id;
+	int dist;
+	
+	public Vertex(int id, int dist) {
+		this.id = id;
+		this.dist = dist;
+	}
 
 	@Override
 	public int compareTo(Vertex that) {

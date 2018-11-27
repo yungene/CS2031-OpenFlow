@@ -1,6 +1,7 @@
 package cistiakj.Router;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
@@ -21,11 +22,13 @@ public class SendingThread implements Runnable, Constants, PacketTypes {
 			try {
 				GenericPacket gp = parent.sendQueue.take();
 				DatagramPacket pk = gp.toDatagramPacket();
-				pk.setSocketAddress(gp.getFinalAddr());
+				//pk.setSocketAddress(gp.getFinalAddr());
 				//parent.socket.send(pk);
 				assert(parent.hasRoute(gp.getFinalDest()));
 				// get interface from which to send
 				int outId = parent.getNextHop(gp.getFinalDest());
+				pk.setPort(outId);
+				pk.setAddress(InetAddress.getLocalHost());
 				parent.interfaces.get(outId).send(parent.socket, pk);
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -40,11 +40,12 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 		GenericPacket gp = null;
 		OFPacket ofpk = null;
 		try {
-			connect();
+			//connect();
 			for (;;) {
 				//processController();
-				//gp = parent.resolveQueue.poll(PACKET_WAITING_TIME_IN_SEC, TimeUnit.SECONDS);
-				gp = parent.resolveQueue.poll();
+				gp = parent.resolveQueue.poll(PACKET_WAITING_TIME_IN_SEC, TimeUnit.SECONDS);
+				// poll leads to high cpu usage
+				//gp = parent.resolveQueue.poll();
 				processController();
 				if (gp == null) {
 					continue;
@@ -56,10 +57,11 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} catch (TimeoutException e) {
-			System.err.println("Timeout has occured. Connection unsuccessful");
-			e.printStackTrace();
-		}
+		} 
+//		catch (TimeoutException e) {
+//			System.err.println("Timeout has occured. Connection unsuccessful");
+//			e.printStackTrace();
+//		}
 	}
 
 	private void findPath(GenericPacket gp) throws InterruptedException {
@@ -118,6 +120,7 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 
 	private void connect() throws TimeoutException {
 		try {
+			int i;
 			HelloPacket hp = new HelloPacket(parent.protocolVersion, parent.routerId, seq);
 			DatagramPacket packet = hp.toDatagramPacket();
 			GenericPacket gpOut = null;
@@ -126,8 +129,13 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 				throw new TimeoutException();
 			}
 			// TODO: look at possible infinite loop
-			while (!ofpk.getType().equals(OPF_TYPE.OFPT_FEATURES_REQUEST)) {
+			i = 0;
+			while (!ofpk.getType().equals(OPF_TYPE.OFPT_FEATURES_REQUEST) && i < WAIT_LIMIT) {
 				ofpk = sendAndListenController(packet);
+				i++;
+			}
+			if(i == WAIT_LIMIT) {
+				throw new TimeoutException();
 			}
 			// now send a features reply
 			Interface[] interfaces = new Interface[parent.interfaces.size()];
@@ -135,8 +143,12 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 			FeatureReplyPacket frp = new FeatureReplyPacket(parent.protocolVersion, parent.routerId, seq, interfaces);
 			packet = frp.toDatagramPacket();
 			ofpk = sendAndListenController(packet);
-			while (!ofpk.getType().equals(OPF_TYPE.OFPT_ACK)) {
+			i = 0;
+			while (!ofpk.getType().equals(OPF_TYPE.OFPT_ACK) && i < WAIT_LIMIT) {
 				ofpk = sendAndListenController(packet);
+			}
+			if(i == WAIT_LIMIT) {
+				throw new TimeoutException();
 			}
 			// successfully connected to controller and entered network
 		} catch (InterruptedException e) {
@@ -162,6 +174,7 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 
 	private void sendController(DatagramPacket dtpk) throws InterruptedException {
 		dtpk.setAddress(parent.controllerAddress.getAddress());
+		dtpk.setPort(parent.controllerAddress.getPort());
 		GenericPacket gpOut = new GenericPacket(dtpk);
 		parent.sendQueue.put(gpOut);
 	}

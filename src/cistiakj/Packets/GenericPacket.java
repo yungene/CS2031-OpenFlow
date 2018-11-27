@@ -21,9 +21,17 @@ public class GenericPacket {
 	private int finalDest;
 	private InetSocketAddress finalAddr;
 	private DatagramPacket payload;
+	private byte[] data;
+	private int length;
+	private int offset;
+	
 	
 	public GenericPacket(DatagramPacket packet) {
 		payload = packet;
+		this.data = payload.getData();
+		this.length = payload.getLength();
+		this.offset = payload.getOffset();
+		this.finalAddr = new InetSocketAddress(packet.getAddress(), packet.getPort());
 	}
 
 	public int getFinalDest() {
@@ -54,7 +62,10 @@ public class GenericPacket {
 				oin = new ObjectInputStream(bin);
 				//int finalDest = oin.readInt();
 				InetSocketAddress finalAddr= (InetSocketAddress) oin.readObject();
-				DatagramPacket pk = (DatagramPacket) oin.readObject();
+				byte[] payload = (byte[])oin.readObject();
+				int length = oin.readInt();
+				int offset = oin.readInt();
+				DatagramPacket pk = new DatagramPacket(payload, offset, length, finalAddr.getAddress(),finalAddr.getPort());
 				gp = new GenericPacket(pk);
 				//gp.setFinalDest(finalDest);
 				gp.setFinalAddr(finalAddr);
@@ -71,6 +82,10 @@ public class GenericPacket {
 
 	public void setPayload(DatagramPacket payload) {
 		this.payload = payload;
+		this.data = payload.getData();
+		this.length = payload.getLength();
+		this.offset = payload.getOffset();
+		this.finalAddr = new InetSocketAddress(payload.getAddress(), payload.getPort());
 	}
 
 	public DatagramPacket toDatagramPacket() {
@@ -82,7 +97,9 @@ public class GenericPacket {
 			bout = new ByteArrayOutputStream();
 			oout = new ObjectOutputStream(bout);
 			oout.writeObject(finalAddr);
-			oout.writeObject(payload);
+			oout.writeObject(this.data);
+			oout.writeInt(length);
+			oout.writeInt(offset);
 			oout.flush();
 			data = bout.toByteArray();
 			packet = new DatagramPacket(data, data.length);

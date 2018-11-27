@@ -1,7 +1,10 @@
 package cistiakj.Router;
 
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
@@ -20,8 +23,9 @@ import cistiakj.Packets.PacketTypes;
  *
  */
 public class Router implements Constants, PacketTypes {
-	
-	// all entries have src as the current router. However, routing based on src can also be implemented
+
+	// all entries have src as the current router. However, routing based on src can
+	// also be implemented
 	FlowTable<RouterFlowTableEntry> flowTable;
 	HashMap<Integer, Interface> interfaces;
 	DatagramSocket socket;
@@ -29,23 +33,34 @@ public class Router implements Constants, PacketTypes {
 	InetSocketAddress controllerAddress;
 	int protocolVersion;
 	int routerId;
-	
+
 	BlockingQueue<GenericPacket> sendQueue;
 	BlockingQueue<GenericPacket> resolveQueue;
 	BlockingQueue<OFPacket> controllerQueue;
-	
-	
-	public Router(int srcPort, ArrayList<Interface> interfaces) {
+
+	public static void main(String[] args) {
+		try {
+			Router r = new Router(55004, new InetSocketAddress(InetAddress.getLocalHost(), 55010),
+					new ArrayList<Interface>());
+			r.run();
+		} catch (SocketException | UnknownHostException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Router(int srcPort,InetSocketAddress controllerAddress, ArrayList<Interface> interfaces) throws SocketException {
 		this.srcPort = srcPort;
+		this.controllerAddress= controllerAddress;
 		this.protocolVersion = OF_VERSION;
 		this.routerId = srcPort;
-		for(int i = 0 ; i < interfaces.size();i++) {
+		for (int i = 0; i < interfaces.size(); i++) {
 			this.interfaces.put(i, interfaces.get(i));
-		}	
+		}
 		this.sendQueue = new LinkedBlockingQueue<GenericPacket>();
 		this.resolveQueue = new LinkedBlockingQueue<GenericPacket>();
 		this.controllerQueue = new LinkedBlockingQueue<OFPacket>();
 		this.flowTable = new FlowTable<RouterFlowTableEntry>();
+		this.socket = new DatagramSocket(this.srcPort);
 	}
 
 	public void run() {
@@ -55,26 +70,24 @@ public class Router implements Constants, PacketTypes {
 		// 2) listen for incoming traffic
 		ListeningThread lt = new ListeningThread(this);
 		new Thread(lt).start();
-		
+
 		SendingThread st = new SendingThread(this);
 		new Thread(st).start();
-		
+
 	}
-	
-	
-	
+
 	void addEntry(int destPort, int inId, int outId) {
 		flowTable.addEntry(destPort, srcPort, new RouterFlowTableEntry(destPort, inId, outId));
 	}
-	
+
 	void addEntry(RouterFlowTableEntry entry) {
-		addEntry(entry.getDest(),entry.getInInterfaceId(),entry.getOutInterfaceId());
+		addEntry(entry.getDest(), entry.getInInterfaceId(), entry.getOutInterfaceId());
 	}
-	
+
 	public boolean hasRoute(int destPort) {
 		return flowTable.getEntry(destPort, srcPort) != null;
 	}
-	
+
 	public int getNextHop(int destPort) {
 		RouterFlowTableEntry entry = flowTable.getEntry(destPort, srcPort);
 		return entry.getOutInterfaceId();

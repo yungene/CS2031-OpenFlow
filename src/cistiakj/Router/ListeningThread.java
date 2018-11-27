@@ -41,7 +41,7 @@ public class ListeningThread implements Runnable, Constants, PacketTypes {
 							// a trick here to make ControllingThread to skip over listening to resolve queue and to start listening
 							// controller queue because controller queue has packets arrived. Hence controller queue has higher priority
 							// possibly needs testing
-							//parent.resolveQueue.put(null);
+							parent.resolveQueue.put(null);
 							parent.controllerQueue.put(ofpk);
 						}
 					}
