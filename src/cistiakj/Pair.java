@@ -7,7 +7,7 @@ package cistiakj;
  * @param <L>
  * @param <R>
  */
-public class Pair<L,R> {
+public class Pair<L extends Comparable<L>,R> implements Comparable<Pair<L,R>>{
 	private L left;
 	private R right;
 	
@@ -36,6 +36,12 @@ public class Pair<L,R> {
 	//compare left sides only
 	public boolean equals(Pair<L,R> that) {
 		return that.getLeft().equals(left);
+	}
+
+
+	@Override
+	public int compareTo(Pair<L,R> that) {
+		return that.getLeft().compareTo(left);
 	}
 	
 	
