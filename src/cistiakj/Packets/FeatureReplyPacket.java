@@ -11,7 +11,7 @@ import cistiakj.Router.Interface;
  *
  */
 public class FeatureReplyPacket extends OFPacket{
-	Interface[] entries;
+	public Interface[] entries;
 	public FeatureReplyPacket(int version, int connectionId, int seq,Interface[] entries) {
 		super(OPF_TYPE.OFPT_FEATURES_REPLY, version, connectionId,seq);
 		this.entries = entries;

@@ -23,7 +23,7 @@ import cistiakj.Packets.PacketTypes;
  *
  */
 public class Router implements Constants, PacketTypes {
-
+	//TODO: chec this statement
 	// all entries have src as the current router. However, routing based on src can
 	// also be implemented
 	FlowTable<RouterFlowTableEntry> flowTable;
@@ -52,6 +52,7 @@ public class Router implements Constants, PacketTypes {
 		this.srcPort = srcPort;
 		this.controllerAddress= controllerAddress;
 		this.protocolVersion = OF_VERSION;
+		//important!!!
 		this.routerId = srcPort;
 		for (int i = 0; i < interfaces.size(); i++) {
 			this.interfaces.put(i, interfaces.get(i));

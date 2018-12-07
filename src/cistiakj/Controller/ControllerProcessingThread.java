@@ -1,15 +1,16 @@
 package cistiakj.Controller;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 import cistiakj.Constants;
-import cistiakj.Packets.AckPacket;
-import cistiakj.Packets.EchoReplyPacket;
-import cistiakj.Packets.EchoRequestPacket;
-import cistiakj.Packets.ErrorPacket;
+import cistiakj.FlowTable.ControllerFlowTableEntry;
+import cistiakj.FlowTable.FlowTableEntry;
+import cistiakj.FlowTable.RouterFlowTableEntry;
 import cistiakj.Packets.FeatureReplyPacket;
 import cistiakj.Packets.FeatureRequestPacket;
-import cistiakj.Packets.GetConfigReplyPacket;
-import cistiakj.Packets.GetConfigRequestPacket;
-import cistiakj.Packets.HelloPacket;
+import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.OFPacket;
 import cistiakj.Packets.PacketInPacket;
 import cistiakj.Packets.PacketOutPacket;
@@ -31,7 +32,7 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 			try {
 				ofpk = controller.processQueue.take();
 				process(ofpk);
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | IOException e) {
 				e.printStackTrace();
 			}
 
@@ -39,22 +40,38 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 	}
 	
 	
-	void process(OFPacket ofpk) {
+	void process(OFPacket ofpk) throws IOException, InterruptedException {
 		
 		switch(ofpk.getType()) {
 		case OFPT_ACK:
 			break;
 		case OFPT_HELLO:
+			int id = ofpk.getConnectionId();
+			
 			FeatureRequestPacket frpk = new FeatureRequestPacket(controller.protocolVersion, controller.controllerId, seq);
 			sendRouter(frpk, ofpk.getConnectionId());
 			break;
 		case OFPT_FEATURES_REPLY:
+			FeatureReplyPacket frp = (FeatureReplyPacket) ofpk;
+			//TODO: check whether connection id would work
+			controller.buildNetwork(ofpk.getConnectionId(), frp.entries);
 			break;
 		case OFPT_GET_CONFIG_REPLY:
 			break;
 		case OFPT_PACKET_OUT:
+			if(controller.tableChanged) {
+				controller.buildFlowTable();
+			}
+			//packet requires forwarding
+			PacketOutPacket pop = (PacketOutPacket) ofpk;
+			
+			sendPath(ofpk.getConnectionId(), pop.packet.getFinalAddr().getPort());
+			
+			PacketInPacket pip = new PacketInPacket(controller.protocolVersion,controller.controllerId, seq, pop.packet);
+			sendRouter(pip, ofpk.getConnectionId());
 			break;
 		case OFPT_ECHO_REQUEST:
+			//ignore for now
 			break;
 		case OFPT_ECHO_REPLY:
 			break;
@@ -65,7 +82,21 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 		}
 	}
 	
-	void sendRouter(OFPacket ofpk, int RouterId) {
+	void sendPath(int src, int dest) throws IOException, InterruptedException {
+		FlowTableEntry entries = controller.flowTable.getEntry(dest, src);
+		for(ControllerFlowTableEntry entry: entries.getEntries()) {
+			RouterFlowTableEntry routerEntry = new RouterFlowTableEntry(entry.getDest(), entry.getInInterfaceId(), entry.getOutInterfaceId());
+			RouterFlowTableEntry[] routerEntries = new RouterFlowTableEntry[1];
+			routerEntries[0] = routerEntry;
+			SetConfigPacket scpk = new SetConfigPacket(controller.protocolVersion, controller.controllerId, seq, routerEntries);
+			sendRouter(scpk, entry.getRouterId());
+		}
 		
+	}
+	
+	void sendRouter(OFPacket ofpk, int RouterId) throws IOException, InterruptedException {
+		GenericPacket pk = new GenericPacket(ofpk.toDatagramPacket());
+		pk.setFinalAddr(new InetSocketAddress(InetAddress.getLocalHost(), RouterId));
+		controller.sendQueue.put(pk);
 	}
 }

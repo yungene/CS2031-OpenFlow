@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * 
@@ -28,6 +29,10 @@ public class Graph<V extends Comparable<V>> {
 			adj.put(u, new ArrayList<>());
 		}
 
+	}
+	
+	public Set<V> V(){
+		return adj.keySet();
 	}
 
 	public void addEdge(V u, V v, int w) {

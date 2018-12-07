@@ -27,7 +27,7 @@ public class SendingThread implements Runnable, Constants, PacketTypes {
 				assert(parent.hasRoute(gp.getFinalDest()));
 				// get interface from which to send
 				int outId = parent.getNextHop(gp.getFinalDest());
-				pk.setPort(outId);
+				//pk.setPort(outId);
 				pk.setAddress(InetAddress.getLocalHost());
 				parent.interfaces.get(outId).send(parent.socket, pk);
 			} catch (Exception e) {

@@ -40,7 +40,7 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 		GenericPacket gp = null;
 		OFPacket ofpk = null;
 		try {
-			//connect();
+			connect();
 			for (;;) {
 				//processController();
 				gp = parent.resolveQueue.poll(PACKET_WAITING_TIME_IN_SEC, TimeUnit.SECONDS);
@@ -55,7 +55,7 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 				// communicate with controller to get a path
 				findPath(gp);
 			}
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | TimeoutException e) {
 			e.printStackTrace();
 		} 
 //		catch (TimeoutException e) {

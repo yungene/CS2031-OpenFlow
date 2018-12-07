@@ -2,6 +2,7 @@ package cistiakj.Controller;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.InetSocketAddress;
 
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
@@ -28,6 +29,13 @@ public class ControllerListeningThread implements Runnable, PacketTypes, Constan
 				}
 				OFPacket ofpk = OFPacket.fromDatagramPacket(gp.getPayload());
 				if(ofpk == null) {
+					continue;
+				}
+				//insert an antry about each router into memory
+				if(!controller.routers.containsKey(ofpk.getConnectionId()) &&ofpk.getType() == OPF_TYPE.OFPT_HELLO) {
+					controller.routers.put(ofpk.getConnectionId(), new InetSocketAddress(pk.getAddress(),pk.getPort()));
+				}else {
+					//drop the packet
 					continue;
 				}
 				controller.processQueue.add(ofpk);
