@@ -88,7 +88,7 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 		// be careful it might send packet to endpoint
 		FlowTableEntry entries = controller.flowTable.getEntry(dest, src);
 		for(ControllerFlowTableEntry entry: entries.getEntries()) {
-			RouterFlowTableEntry routerEntry = new RouterFlowTableEntry(entry.getDest(), entry.getInInterfaceId(), entry.getOutInterfaceId());
+			RouterFlowTableEntry routerEntry = new RouterFlowTableEntry(dest, entry.getInInterfaceId(), entry.getOutInterfaceId());
 			RouterFlowTableEntry[] routerEntries = new RouterFlowTableEntry[1];
 			routerEntries[0] = routerEntry;
 			SetConfigPacket scpk = new SetConfigPacket(controller.protocolVersion, controller.controllerId, seq, routerEntries);

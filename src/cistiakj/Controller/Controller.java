@@ -84,6 +84,7 @@ public class Controller implements Runnable, Constants {
 			if (i.getPort() != this.srcPort) {
 				map.put(i.getPort(), i.getId());
 				this.network.addEdge(nodeId, i.getPort(), i.getMetric());
+				//this.network.addUndirectedEdge(nodeId, i.getPort(), i.getMetric());
 			}
 		}
 		// TODO: check for efficiency
@@ -95,16 +96,23 @@ public class Controller implements Runnable, Constants {
 		// dijkstra will return a hashmap with all the parents
 		Set<Integer> routers = network.V();
 		for (Integer start : routers) {
+			if(start.compareTo(50010) > 0) {
+				//it is an endpoint
+				continue;
+			}
 			HashMap<Integer, Integer> parents = network.dijkstraParents(start);
 			for (Integer fin : parents.keySet()) {
+				if(fin.equals(start)) {
+					continue;
+				}
 				FlowTableEntry path = new FlowTableEntry();
-				flowTable.addEntry(fin, start, path);
+				//flowTable.addEntry(fin, start, path);
 				Integer next = fin;
 				Integer curr = parents.get(next);
 				Integer prev = parents.get(curr);
 				// Integer v = parents.get(p);
 				// reconstruct the path and put it into flow table
-				while (!curr.equals(start) && curr != prev) {
+				while (!next.equals(start)) {
 					// TODO: create a loop back interface from router to itself, so that flow table
 					// works
 					path.addEntry(curr, next, routerInterfaceIdMap.get(curr).get(prev),
@@ -113,8 +121,13 @@ public class Controller implements Runnable, Constants {
 					curr = prev;
 					prev = parents.get(prev);
 				}
-				path.addEntry(curr, next, routerInterfaceIdMap.get(curr).get(prev),
-						routerInterfaceIdMap.get(curr).get(next));
+//				if (curr == prev && prev != null && next != null) {
+//					//System.out.printf("cu");
+//					path.addEntry(curr, next, routerInterfaceIdMap.get(curr).get(prev),
+//							routerInterfaceIdMap.get(curr).get(next));
+//				}
+				//just to be sure hashing is done correctly
+				flowTable.addEntry(fin, start, path);
 
 			}
 		}

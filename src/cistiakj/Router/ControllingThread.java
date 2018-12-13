@@ -107,7 +107,7 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 			if (parent.hasRoute(gp.getFinalDest())) {
 				parent.sendQueue.put(gp);
 			}else {
-				System.err.println("no destination found");
+				System.err.println("no destination found " + gp.getFinalDest());
 			}
 			break;
 		case OFPT_FEATURES_REQUEST:

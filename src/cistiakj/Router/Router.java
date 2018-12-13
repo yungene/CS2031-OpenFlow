@@ -54,17 +54,19 @@ public class Router implements Runnable, Constants, PacketTypes {
 		this.srcPort = srcPort;
 		this.controllerAddress= controllerAddress;
 		this.protocolVersion = OF_VERSION;
-		//important!!!
-		this.routerId = srcPort;
-		this.interfaces = new HashMap<>();
-		for(Interface inface: interfaces) {
-			this.interfaces.put(inface.getId(), inface);
-		}
 		this.sendQueue = new LinkedBlockingQueue<GenericPacket>();
 		this.resolveQueue = new LinkedBlockingQueue<GenericPacket>();
 		this.controllerQueue = new LinkedBlockingQueue<OFPacket>();
 		this.flowTable = new FlowTable<RouterFlowTableEntry>();
 		this.socket = new DatagramSocket(this.srcPort);
+		//important!!!
+		this.routerId = srcPort;
+		this.interfaces = new HashMap<>();
+		for(Interface inface: interfaces) {
+			this.interfaces.put(inface.getId(), inface);
+			flowTable.addEntry(inface.getPort(), srcPort,
+					new RouterFlowTableEntry(inface.getPort(), 0, inface.getId()));
+		}
 		
 		//add default entry to flow table for controller
 		flowTable.addEntry(controllerAddress.getPort(), srcPort, new RouterFlowTableEntry(controllerAddress.getPort(), -1, -1));

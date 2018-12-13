@@ -110,9 +110,9 @@ public class Graph<V extends Comparable<V>> {
 				V u = pair.getLeft();
 				int w = pair.getRight();
 				if (queue.contains(u) && dist.get(u) > dist.get(v) + w) {
+					queue.remove(u);
 					dist.put(u, dist.get(v) + w);
 					parents.put(u, v);
-					queue.remove(u);
 					queue.add(u);
 				}
 			}
