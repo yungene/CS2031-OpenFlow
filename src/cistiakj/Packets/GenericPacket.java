@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
@@ -61,7 +62,10 @@ public class GenericPacket {
 				bin = new ByteArrayInputStream(data);
 				oin = new ObjectInputStream(bin);
 				//int finalDest = oin.readInt();
-				InetSocketAddress finalAddr= (InetSocketAddress) oin.readObject();
+				//InetSocketAddress finalAddr= (InetSocketAddress) oin.readObject();
+				byte[] addr = (byte[])oin.readObject();
+				int port = oin.readInt();
+				InetSocketAddress finalAddr = new InetSocketAddress(InetAddress.getByAddress(addr), port);
 				byte[] payload = (byte[])oin.readObject();
 				int length = oin.readInt();
 				int offset = oin.readInt();
@@ -96,9 +100,15 @@ public class GenericPacket {
 			byte[] data;
 			bout = new ByteArrayOutputStream();
 			oout = new ObjectOutputStream(bout);
-			oout.writeObject(finalAddr);
+			oout.writeUTF("addr");
+			//oout.writeObject(finalAddr);
+			oout.writeInt(finalAddr.getPort());
+			oout.writeObject(finalAddr.getAddress().getAddress());
+			oout.writeUTF("data");
 			oout.writeObject(this.data);
+			oout.writeUTF("len");
 			oout.writeInt(length);
+			oout.writeUTF("offset");
 			oout.writeInt(offset);
 			oout.flush();
 			data = bout.toByteArray();
