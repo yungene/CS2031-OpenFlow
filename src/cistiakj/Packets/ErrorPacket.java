@@ -3,6 +3,8 @@ package cistiakj.Packets;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import cistiakj.Packets.PacketTypes.OPF_TYPE;
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
@@ -16,6 +18,7 @@ public class ErrorPacket extends OFPacket{
 	}
 	public ErrorPacket(ObjectInputStream in) {
 		super(in);
+		type = OPF_TYPE.OFPT_ERROR;
 		try {
 			this.errorType = in.readInt();
 		} catch (IOException e) {

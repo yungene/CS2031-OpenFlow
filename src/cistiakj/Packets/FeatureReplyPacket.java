@@ -3,6 +3,8 @@ package cistiakj.Packets;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import cistiakj.Packets.PacketTypes.OPF_TYPE;
 import cistiakj.Router.Interface;
 
 /**
@@ -18,6 +20,7 @@ public class FeatureReplyPacket extends OFPacket{
 	}
 	public FeatureReplyPacket(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		super(in);
+		type = OPF_TYPE.OFPT_FEATURES_REPLY;
 		this.entries = (Interface[])in.readObject();
 	}
 	@Override

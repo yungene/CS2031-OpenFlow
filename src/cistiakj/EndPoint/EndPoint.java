@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 import cistiakj.Constants;
 import tcdIO.Terminal;
 
-public class EndPoint implements Constants{
+public class EndPoint implements Runnable, Constants{
 
 	Terminal in;
 	Terminal out;
@@ -18,8 +18,8 @@ public class EndPoint implements Constants{
 	
 	public EndPoint(int srcPort, int routerPort) throws UnknownHostException, SocketException {
 		
-		this.in = new Terminal("Input terminal");
-		this.out = new Terminal("Output terminal");
+		this.in = new Terminal(String.format("%d - Input terminal",srcPort));
+		this.out = new Terminal(String.format("%d - Input terminal",srcPort));
 		this.defaultGatewayAddress = new InetSocketAddress(InetAddress.getLocalHost(), routerPort);
 		this.socket = new DatagramSocket(srcPort);
 	}

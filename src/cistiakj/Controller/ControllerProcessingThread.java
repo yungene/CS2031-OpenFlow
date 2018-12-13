@@ -1,6 +1,7 @@
 package cistiakj.Controller;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
@@ -60,14 +61,15 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 			break;
 		case OFPT_PACKET_OUT:
 			if(controller.tableChanged) {
+				System.out.println("building a table");
 				controller.buildFlowTable();
 			}
 			//packet requires forwarding
 			PacketOutPacket pop = (PacketOutPacket) ofpk;
+			System.out.println("built a table correctly");
+			sendPath(ofpk.getConnectionId(), pop.destPort);
 			
-			sendPath(ofpk.getConnectionId(), pop.packet.getFinalAddr().getPort());
-			
-			PacketInPacket pip = new PacketInPacket(controller.protocolVersion,controller.controllerId, seq, pop.packet);
+			PacketInPacket pip = new PacketInPacket(controller.protocolVersion,controller.controllerId, seq, pop);
 			sendRouter(pip, ofpk.getConnectionId());
 			break;
 		case OFPT_ECHO_REQUEST:
@@ -83,6 +85,7 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 	}
 	
 	void sendPath(int src, int dest) throws IOException, InterruptedException {
+		// be careful it might send packet to endpoint
 		FlowTableEntry entries = controller.flowTable.getEntry(dest, src);
 		for(ControllerFlowTableEntry entry: entries.getEntries()) {
 			RouterFlowTableEntry routerEntry = new RouterFlowTableEntry(entry.getDest(), entry.getInInterfaceId(), entry.getOutInterfaceId());
@@ -95,8 +98,9 @@ public class ControllerProcessingThread implements Runnable, PacketTypes, Consta
 	}
 	
 	void sendRouter(OFPacket ofpk, int RouterId) throws IOException, InterruptedException {
-		GenericPacket pk = new GenericPacket(ofpk.toDatagramPacket());
-		pk.setFinalAddr(new InetSocketAddress(InetAddress.getLocalHost(), RouterId));
-		controller.sendQueue.put(pk);
+		DatagramPacket dp = ofpk.toDatagramPacket();
+		dp.setSocketAddress(new InetSocketAddress(InetAddress.getLocalHost(), RouterId));
+		GenericPacket gp = new GenericPacket(dp);
+		controller.sendQueue.put(gp);
 	}
 }

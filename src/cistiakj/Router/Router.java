@@ -17,12 +17,14 @@ import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.OFPacket;
 import cistiakj.Packets.PacketTypes;
 
+import tcdIO.Terminal; // for debugging purpose
+
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
  *
  */
-public class Router implements Constants, PacketTypes {
+public class Router implements Runnable, Constants, PacketTypes {
 	//TODO: chec this statement
 	// all entries have src as the current router. However, routing based on src can
 	// also be implemented
@@ -54,14 +56,19 @@ public class Router implements Constants, PacketTypes {
 		this.protocolVersion = OF_VERSION;
 		//important!!!
 		this.routerId = srcPort;
-		for (int i = 0; i < interfaces.size(); i++) {
-			this.interfaces.put(i, interfaces.get(i));
+		this.interfaces = new HashMap<>();
+		for(Interface inface: interfaces) {
+			this.interfaces.put(inface.getId(), inface);
 		}
 		this.sendQueue = new LinkedBlockingQueue<GenericPacket>();
 		this.resolveQueue = new LinkedBlockingQueue<GenericPacket>();
 		this.controllerQueue = new LinkedBlockingQueue<OFPacket>();
 		this.flowTable = new FlowTable<RouterFlowTableEntry>();
 		this.socket = new DatagramSocket(this.srcPort);
+		
+		//add default entry to flow table for controller
+		flowTable.addEntry(controllerAddress.getPort(), srcPort, new RouterFlowTableEntry(controllerAddress.getPort(), -1, -1));
+		this.interfaces.put(-1, new Interface(-1, controllerAddress.getPort(), Integer.MAX_VALUE));
 	}
 
 	public void run() {
@@ -91,6 +98,10 @@ public class Router implements Constants, PacketTypes {
 
 	public int getNextHop(int destPort) {
 		RouterFlowTableEntry entry = flowTable.getEntry(destPort, srcPort);
+		assert(entry != null);
+		if(entry == null) {
+			System.err.println("Error");
+		}
 		return entry.getOutInterfaceId();
 	}
 }

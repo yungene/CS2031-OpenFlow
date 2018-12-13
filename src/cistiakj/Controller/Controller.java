@@ -16,7 +16,9 @@ import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.OFPacket;
 import cistiakj.Router.Interface;
 
-public class Controller implements Constants{
+import tcdIO.Terminal; // for debugging purpose
+
+public class Controller implements Runnable, Constants {
 
 	// (routrId) -> address of router
 	HashMap<Integer, InetSocketAddress> routers;
@@ -56,6 +58,7 @@ public class Controller implements Constants{
 		this.socket = new DatagramSocket(srcPort);
 		this.protocolVersion = PROTOCOL_VERSION;
 		this.controllerId = (int) (50000 * Math.random());
+		this.routers = new HashMap<>();
 	}
 
 	public void run() {
@@ -74,14 +77,17 @@ public class Controller implements Constants{
 			routerInterfaceIdMap.put(nodeId, new HashMap<>());
 		}
 		HashMap<Integer, Integer> map = routerInterfaceIdMap.get(nodeId);
-		//create a loopback
+		// create a loopback
 		map.put(nodeId, nodeId);
+
 		for (Interface i : adj) {
-			map.put(i.getPort(), i.getId());
-			this.network.addEdge(nodeId, i.getPort(), i.getMetric());
+			if (i.getPort() != this.srcPort) {
+				map.put(i.getPort(), i.getId());
+				this.network.addEdge(nodeId, i.getPort(), i.getMetric());
+			}
 		}
 		// TODO: check for efficiency
-		//buildFlowTable();
+		// buildFlowTable();
 	}
 
 	void buildFlowTable() {
@@ -98,14 +104,17 @@ public class Controller implements Constants{
 				Integer prev = parents.get(curr);
 				// Integer v = parents.get(p);
 				// reconstruct the path and put it into flow table
-				while (!curr.equals(start)) {
-					//TODO: create a loop back interface from router to itself, so that flow table works
-					path.addEntry(curr,next, routerInterfaceIdMap.get(curr).get(prev),
+				while (!curr.equals(start) && curr != prev) {
+					// TODO: create a loop back interface from router to itself, so that flow table
+					// works
+					path.addEntry(curr, next, routerInterfaceIdMap.get(curr).get(prev),
 							routerInterfaceIdMap.get(curr).get(next));
 					next = curr;
 					curr = prev;
 					prev = parents.get(prev);
 				}
+				path.addEntry(curr, next, routerInterfaceIdMap.get(curr).get(prev),
+						routerInterfaceIdMap.get(curr).get(next));
 
 			}
 		}

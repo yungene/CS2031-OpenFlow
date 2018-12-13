@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import cistiakj.FlowTable.RouterFlowTableEntry;
+import cistiakj.Packets.PacketTypes.OPF_TYPE;
 
 public class SetConfigPacket extends OFPacket{
 	public RouterFlowTableEntry[] entries;
@@ -14,6 +15,7 @@ public class SetConfigPacket extends OFPacket{
 	}
 	public SetConfigPacket(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		super(in);
+		type = OPF_TYPE.OFPT_SET_CONFIG;
 		this.entries = (RouterFlowTableEntry[])in.readObject();
 	}
 	@Override

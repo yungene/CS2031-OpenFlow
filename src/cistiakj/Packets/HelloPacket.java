@@ -13,6 +13,7 @@ public class HelloPacket extends OFPacket{
 	}
 	public HelloPacket(ObjectInputStream in) {
 		super(in);
+		type = OPF_TYPE.OFPT_HELLO;
 	}
 	@Override
 	public void toObjectOutputStream(ObjectOutputStream out) {

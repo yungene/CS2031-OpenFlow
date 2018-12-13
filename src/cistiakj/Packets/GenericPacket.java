@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -16,7 +17,7 @@ import java.net.InetSocketAddress;
  * A wrapper class for all the packet on the network, since the nextwork is emulated and hence MAC addresses are not
  * used
  */
-public class GenericPacket {
+public class GenericPacket implements Serializable{
 	
 	//port number of the final destination
 	private int finalDest;
@@ -33,6 +34,30 @@ public class GenericPacket {
 		this.length = payload.getLength();
 		this.offset = payload.getOffset();
 		this.finalAddr = new InetSocketAddress(packet.getAddress(), packet.getPort());
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 
 	public int getFinalDest() {
@@ -63,8 +88,8 @@ public class GenericPacket {
 				oin = new ObjectInputStream(bin);
 				//int finalDest = oin.readInt();
 				//InetSocketAddress finalAddr= (InetSocketAddress) oin.readObject();
-				byte[] addr = (byte[])oin.readObject();
 				int port = oin.readInt();
+				byte[] addr = (byte[])oin.readObject();
 				InetSocketAddress finalAddr = new InetSocketAddress(InetAddress.getByAddress(addr), port);
 				byte[] payload = (byte[])oin.readObject();
 				int length = oin.readInt();
@@ -74,6 +99,7 @@ public class GenericPacket {
 				//gp.setFinalDest(finalDest);
 				gp.setFinalAddr(finalAddr);
 			} catch(Exception e) {
+				System.err.println("Failed to convert to Generic Packet");
 				return null;
 			}
 		}
@@ -100,15 +126,15 @@ public class GenericPacket {
 			byte[] data;
 			bout = new ByteArrayOutputStream();
 			oout = new ObjectOutputStream(bout);
-			oout.writeUTF("addr");
+			//oout.writeUTF("addr");
 			//oout.writeObject(finalAddr);
 			oout.writeInt(finalAddr.getPort());
 			oout.writeObject(finalAddr.getAddress().getAddress());
-			oout.writeUTF("data");
+			//oout.writeUTF("data");
 			oout.writeObject(this.data);
-			oout.writeUTF("len");
+			//oout.writeUTF("len");
 			oout.writeInt(length);
-			oout.writeUTF("offset");
+			//oout.writeUTF("offset");
 			oout.writeInt(offset);
 			oout.flush();
 			data = bout.toByteArray();

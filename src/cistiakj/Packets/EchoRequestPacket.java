@@ -3,6 +3,8 @@ package cistiakj.Packets;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import cistiakj.Packets.PacketTypes.OPF_TYPE;
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
@@ -16,6 +18,7 @@ public class EchoRequestPacket extends OFPacket{
 	}
 	public EchoRequestPacket(ObjectInputStream in) {
 		super(in);
+		type = OPF_TYPE.OFPT_ECHO_REQUEST;
 		try {
 			this.option = in.readInt();
 		} catch (IOException e) {

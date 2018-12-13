@@ -1,6 +1,7 @@
 package cistiakj.Router;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
@@ -11,7 +12,7 @@ import java.net.DatagramSocket;
  * An abstraction to represent an interface of a node =  direct link between the node and its neightbour
  */
 
-public class Interface {
+public class Interface implements Serializable{
 	private int port; //port of a neighbour
 	private int metric;	// weight of an edge in a graph
 	private int id;

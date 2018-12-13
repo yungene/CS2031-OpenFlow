@@ -24,6 +24,9 @@ public class SendingThread implements Runnable, Constants, PacketTypes {
 				DatagramPacket pk = gp.toDatagramPacket();
 				//pk.setSocketAddress(gp.getFinalAddr());
 				//parent.socket.send(pk);
+				if(!parent.hasRoute(gp.getFinalDest())) {
+					System.err.println("destination not found" + gp.getFinalDest());
+				}
 				assert(parent.hasRoute(gp.getFinalDest()));
 				// get interface from which to send
 				int outId = parent.getNextHop(gp.getFinalDest());

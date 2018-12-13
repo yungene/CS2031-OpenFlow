@@ -1,5 +1,6 @@
 package cistiakj.Router;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.ProtocolException;
@@ -55,7 +56,7 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 				// communicate with controller to get a path
 				findPath(gp);
 			}
-		} catch (InterruptedException | TimeoutException e) {
+		} catch (InterruptedException | TimeoutException | IOException e) {
 			e.printStackTrace();
 		} 
 //		catch (TimeoutException e) {
@@ -67,17 +68,17 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 	private void findPath(GenericPacket gp) throws InterruptedException {
 		// TODO: do something :)
 		// send packetOut, receive setConfig, receive packetIn
-		PacketOutPacket popk = new PacketOutPacket(parent.protocolVersion, parent.protocolVersion, seq, gp);
+		PacketOutPacket popk = new PacketOutPacket(parent.protocolVersion, parent.routerId, seq, gp, parent.srcPort);
 		sendController(popk.toDatagramPacket());
 	}
 
-	private void processController() throws InterruptedException {
+	private void processController() throws InterruptedException, IOException {
 		while (!parent.controllerQueue.isEmpty()) {
 			processControllerPackets(parent.controllerQueue.take());
 		}
 	}
 
-	private void processControllerPackets(OFPacket ofpk) throws InterruptedException {
+	private void processControllerPackets(OFPacket ofpk) throws InterruptedException, IOException {
 
 		switch (ofpk.getType()) {
 		case OFPT_ECHO_REQUEST:
@@ -102,9 +103,11 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 			// forward packet to destination
 			// TODO: error cases?? or just drop the packet and let the end use to take care
 			PacketInPacket pipk = (PacketInPacket) ofpk;
-			GenericPacket gp = pipk.packet;
+			GenericPacket gp = pipk.toGenericPacket();
 			if (parent.hasRoute(gp.getFinalDest())) {
 				parent.sendQueue.put(gp);
+			}else {
+				System.err.println("no destination found");
 			}
 			break;
 		case OFPT_FEATURES_REQUEST:
@@ -130,10 +133,11 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 			}
 			// TODO: look at possible infinite loop
 			i = 0;
-			while (!ofpk.getType().equals(OPF_TYPE.OFPT_FEATURES_REQUEST) && i < WAIT_LIMIT) {
-				ofpk = sendAndListenController(packet);
-				i++;
-			}
+//			while (!ofpk.getType().equals(OPF_TYPE.OFPT_FEATURES_REQUEST) && i < WAIT_LIMIT) {
+//				ofpk = sendAndListenController(packet);
+//				i++;
+//			}
+			ofpk = sendAndListenController(packet);
 			if(i == WAIT_LIMIT) {
 				throw new TimeoutException();
 			}
@@ -144,12 +148,14 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 			packet = frp.toDatagramPacket();
 			ofpk = sendAndListenController(packet);
 			i = 0;
-			while (!ofpk.getType().equals(OPF_TYPE.OFPT_ACK) && i < WAIT_LIMIT) {
-				ofpk = sendAndListenController(packet);
-			}
-			if(i == WAIT_LIMIT) {
-				throw new TimeoutException();
-			}
+			//TODO: waiting fro ACK here - not necessary
+//			while (!ofpk.getType().equals(OPF_TYPE.OFPT_ACK) && i < WAIT_LIMIT) {
+//				ofpk = sendAndListenController(packet);
+//			}
+//			ofpk = sendAndListenController(packet);
+//			if(i == WAIT_LIMIT) {
+//				throw new TimeoutException();
+//			}
 			// successfully connected to controller and entered network
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -158,14 +164,18 @@ public class ControllingThread implements Runnable, Constants, PacketTypes {
 
 	private OFPacket sendAndListenController(DatagramPacket dtpk) throws TimeoutException, InterruptedException {
 		OFPacket gpIn = null;
-		for (int i = 0; i < 3; i++) {
+		//TODO: check this. i it neede at all
+		for (int i = 0; i < 1; i++) {
 			sendController(dtpk);
 			try {
 				gpIn = parent.controllerQueue.poll(PACKET_WAITING_TIME_IN_SEC, TimeUnit.SECONDS);
 				if (gpIn == null) {
 					continue;
+				}else {
+					return gpIn;
 				}
 			} catch (InterruptedException e) {
+				System.err.println("timeout - trying again");
 				// do nothing
 			}
 		}

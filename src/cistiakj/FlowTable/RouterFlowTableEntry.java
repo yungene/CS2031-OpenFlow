@@ -1,11 +1,13 @@
 package cistiakj.FlowTable;
 
+import java.io.Serializable;
+
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
  *
  */
-public class RouterFlowTableEntry {
+public class RouterFlowTableEntry implements Serializable{
 
 	private int dest;
 	private int inInterfaceId;

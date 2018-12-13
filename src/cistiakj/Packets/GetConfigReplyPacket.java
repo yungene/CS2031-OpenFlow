@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 
 import cistiakj.FlowTable.FlowTable;
 import cistiakj.FlowTable.RouterFlowTableEntry;
+import cistiakj.Packets.PacketTypes.OPF_TYPE;
 
 public class GetConfigReplyPacket extends OFPacket{
 	FlowTable<RouterFlowTableEntry> flowTable;
@@ -15,6 +16,7 @@ public class GetConfigReplyPacket extends OFPacket{
 	}
 	public GetConfigReplyPacket(ObjectInputStream in) throws ClassNotFoundException, IOException {
 		super(in);
+		type = OPF_TYPE.OFPT_GET_CONFIG_REPLY;
 		this.flowTable = (FlowTable<RouterFlowTableEntry>) in.readObject();
 	}
 	@Override
