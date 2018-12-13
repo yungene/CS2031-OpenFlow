@@ -2,11 +2,13 @@ package cistiakj.Controller;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import cistiakj.Constants;
 import cistiakj.Graph;
 import cistiakj.FlowTable.FlowTable;
 import cistiakj.FlowTable.FlowTableEntry;
@@ -14,7 +16,7 @@ import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.OFPacket;
 import cistiakj.Router.Interface;
 
-public class Controller {
+public class Controller implements Constants{
 
 	// (routrId) -> address of router
 	HashMap<Integer, InetSocketAddress> routers;
@@ -35,20 +37,34 @@ public class Controller {
 
 	public static void main(String[] args) {
 
-		Controller controller = new Controller();
+		Controller controller;
+		try {
+			controller = new Controller(CONTROLLER_DEFAULT_PORT);
+			controller.run();
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public Controller() {
+	public Controller(int srcPort) throws SocketException {
 		this.sendQueue = new LinkedBlockingQueue<>();
 		this.processQueue = new LinkedBlockingQueue<>();
 		this.network = new Graph<Integer>();
 		this.flowTable = new FlowTable<FlowTableEntry>();
 		this.routerInterfaceIdMap = new HashMap<>();
+		this.srcPort = srcPort;
+		this.socket = new DatagramSocket(srcPort);
+		this.protocolVersion = PROTOCOL_VERSION;
+		this.controllerId = (int) (50000 * Math.random());
 	}
 
 	public void run() {
 		ControllerListeningThread clt = new ControllerListeningThread(this);
 		new Thread(clt).start();
+		ControllerProcessingThread cpt = new ControllerProcessingThread(this);
+		new Thread(cpt).start();
+		ControllerSendingThread cst = new ControllerSendingThread(this);
+		new Thread(cst).start();
 	}
 
 	// TODO: possibility of updating info

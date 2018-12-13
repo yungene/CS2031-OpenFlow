@@ -1,5 +1,8 @@
 package cistiakj.Controller;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.PacketTypes;
@@ -13,10 +16,15 @@ public class ControllerSendingThread  implements Runnable, PacketTypes, Constant
 	@Override
 	public void run() {
 		GenericPacket gp = null;
+		DatagramPacket pk = null;
 		for (;;) {
 			try {
 				gp = controller.sendQueue.take();
-			} catch (InterruptedException e) {
+				pk = gp.toDatagramPacket();
+				pk.setAddress(gp.getFinalAddr().getAddress());
+				pk.setPort(gp.getFinalAddr().getPort());
+				controller.socket.send(pk);
+			} catch (InterruptedException | IOException e) {
 				e.printStackTrace();
 			}
 
