@@ -10,7 +10,8 @@ import cistiakj.Router.Interface;
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
- *
+ *	A reply to FeatureRequest. It is sent by router to controller. It includes all the 
+ *	information about router's neighbours.
  */
 public class FeatureReplyPacket extends OFPacket{
 	public Interface[] entries;

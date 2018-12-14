@@ -3,7 +3,7 @@ package cistiakj;
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
- *
+ *	A class that represents a pair of values.
  * @param <L>
  * @param <R>
  */

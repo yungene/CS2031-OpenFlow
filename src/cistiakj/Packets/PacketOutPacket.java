@@ -9,7 +9,7 @@ import cistiakj.Packets.PacketTypes.OPF_TYPE;
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
- *
+ *	Packet is sent by router to controller to request help with routing
  */
 public class PacketOutPacket extends OFPacket {
 	//carrying packet is not feasible

@@ -7,6 +7,11 @@ import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.PacketTypes;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	A helper thread of Controller whose function is to send packets.
+ */
 public class ControllerSendingThread  implements Runnable, PacketTypes, Constants {
 	Controller controller;
 	public ControllerSendingThread(Controller parent) {

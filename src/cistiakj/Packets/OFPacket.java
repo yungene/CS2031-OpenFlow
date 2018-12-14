@@ -10,6 +10,11 @@ import java.net.DatagramPacket;
 import cistiakj.Constants;
 import cistiakj.Packets.PacketTypes.OPF_TYPE;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	Generic OpenFlow packet
+ */
 public abstract class OFPacket implements Constants, PacketTypes{
 	public static final int SUPPORTED_VERSION = 1;
 	OPF_TYPE type;

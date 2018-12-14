@@ -1,5 +1,10 @@
 package cistiakj.FlowTable;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *
+ */
 public class ControllerFlowTableEntry{
 	int routerId;
 

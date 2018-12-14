@@ -9,6 +9,11 @@ import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.OFPacket;
 import cistiakj.Packets.PacketTypes;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	A helper thread of Controller whose function is to listen for incoming packets and deal with them.
+ */
 public class ControllerListeningThread implements Runnable, PacketTypes, Constants {
 
 	Controller controller;

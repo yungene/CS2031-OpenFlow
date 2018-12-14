@@ -15,7 +15,7 @@ import java.net.InetSocketAddress;
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
  *
  * A wrapper class for all the packet on the network, since the nextwork is emulated and hence MAC addresses are not
- * used
+ * used. This class is needed to be able to record both the final address and the address of the next hop.
  */
 public class GenericPacket implements Serializable{
 	

@@ -9,6 +9,11 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	A JUnit test to test the methods of Graph class, especially Dijkstra algortihm.
+ */
 public class GraphTest {
 
 	@Test

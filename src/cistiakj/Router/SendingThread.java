@@ -6,7 +6,11 @@ import java.net.InetAddress;
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.PacketTypes;
-
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	A helper thread of Router whose function is to send packet.
+ */
 public class SendingThread implements Runnable, Constants, PacketTypes {
 
 	Router parent;

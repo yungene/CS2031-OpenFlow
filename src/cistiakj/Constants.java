@@ -1,5 +1,10 @@
 package cistiakj;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	Constants used by classes in OpenFlow project.
+ */
 public interface Constants {
 	
 	int PACKETSIZE = 65536;

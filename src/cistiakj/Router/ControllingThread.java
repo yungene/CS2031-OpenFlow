@@ -22,6 +22,12 @@ import cistiakj.Packets.PacketOutPacket;
 import cistiakj.Packets.PacketTypes;
 import cistiakj.Packets.SetConfigPacket;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	A thread of Router that deals with processing of OpenFlow communication. i.e. communication
+ *	with the Controller
+ */
 public class ControllingThread implements Runnable, Constants, PacketTypes {
 
 	Router parent;

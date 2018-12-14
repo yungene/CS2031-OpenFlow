@@ -12,7 +12,7 @@ import cistiakj.Packets.PacketTypes.OPF_TYPE;
 /**
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
- *
+ *	A reply to PacketOutPacket. It must be sent after all the routers along the path were setup.
  */
 public class PacketInPacket extends OFPacket{
 	//public GenericPacket packet;

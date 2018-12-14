@@ -3,6 +3,11 @@ package cistiakj.FlowTable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *	Entry to a controller's flow table
+ */
 public class FlowTableEntry {
 	
 	ArrayList<ControllerFlowTableEntry> entries;

@@ -18,6 +18,12 @@ import cistiakj.Router.Interface;
 
 import tcdIO.Terminal; // for debugging purpose
 
+
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * OpenFlow controller
+ */
 public class Controller implements Runnable, Constants {
 
 	// (routrId) -> address of router

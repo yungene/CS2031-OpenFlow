@@ -6,6 +6,11 @@ import java.net.DatagramPacket;
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *
+ */
 public class EndPointOutputThread implements Runnable, Constants {
 
 	EndPoint endPoint;

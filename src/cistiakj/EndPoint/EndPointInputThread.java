@@ -9,6 +9,11 @@ import java.net.UnknownHostException;
 import cistiakj.Constants;
 import cistiakj.Packets.GenericPacket;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ *
+ */
 public class EndPointInputThread implements Runnable, Constants {
 
 	EndPoint endPoint;

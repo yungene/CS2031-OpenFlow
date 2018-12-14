@@ -18,6 +18,11 @@ import cistiakj.Packets.PacketOutPacket;
 import cistiakj.Packets.PacketTypes;
 import cistiakj.Packets.SetConfigPacket;
 
+/**
+ * 
+ * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * A thread of controller that deals with processing of queries from routers.
+ */
 public class ControllerProcessingThread implements Runnable, PacketTypes, Constants {
 	Controller controller;
 	int seq;

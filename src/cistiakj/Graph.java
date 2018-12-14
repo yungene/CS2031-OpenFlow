@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
  *
- *         represents a simple weighted directed graph
+ *         A class that represents a simple weighted directed graph
  */
 public class Graph<V extends Comparable<V>> {
 
