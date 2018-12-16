@@ -13,7 +13,7 @@ import cistiakj.Router.Router;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *
  * Run this class to spawn a demostration of the assignment
  */

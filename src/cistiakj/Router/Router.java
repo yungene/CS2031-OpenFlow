@@ -21,7 +21,7 @@ import tcdIO.Terminal; // for debugging purpose
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  * OpenFlow router that can route packets of type GenericPacket
  */
 public class Router implements Runnable, Constants, PacketTypes {

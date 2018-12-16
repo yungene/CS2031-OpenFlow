@@ -8,7 +8,7 @@ import cistiakj.Packets.GenericPacket;
 import cistiakj.Packets.PacketTypes;
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	A helper thread of Router whose function is to send packet.
  */
 public class SendingThread implements Runnable, Constants, PacketTypes {

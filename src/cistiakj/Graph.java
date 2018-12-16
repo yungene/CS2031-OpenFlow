@@ -9,7 +9,7 @@ import java.util.Set;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *
  *         A class that represents a simple weighted directed graph
  */

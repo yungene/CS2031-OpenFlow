@@ -12,7 +12,7 @@ import cistiakj.Packets.PacketTypes.OPF_TYPE;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	Generic OpenFlow packet
  */
 public abstract class OFPacket implements Constants, PacketTypes{
@@ -84,10 +84,6 @@ public abstract class OFPacket implements Constants, PacketTypes{
 				data = packet.getData();
 				bin = new ByteArrayInputStream(data);
 				oin = new ObjectInputStream(bin);
-				String name = oin.readUTF();
-				if(!name.equals("SPB")) {
-					return null;
-				}
 				type = OPF_TYPE.values()[oin.readInt()]; // read in the type of the
 													// packet
 				int version = oin.readInt();
@@ -153,7 +149,6 @@ public abstract class OFPacket implements Constants, PacketTypes{
 			byte[] data;
 			bout = new ByteArrayOutputStream();
 			oout = new ObjectOutputStream(bout);
-			oout.writeUTF("SPB");
 			oout.writeInt(type.ordinal());
 			oout.writeInt(version);
 			oout.writeInt(connectionId);

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *
  * @param <Entry>
  */

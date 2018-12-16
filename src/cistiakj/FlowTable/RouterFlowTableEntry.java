@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *
  */
 public class RouterFlowTableEntry implements Serializable{

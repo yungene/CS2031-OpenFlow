@@ -8,7 +8,7 @@ import cistiakj.Packets.GenericPacket;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *
  */
 public class EndPointOutputThread implements Runnable, Constants {

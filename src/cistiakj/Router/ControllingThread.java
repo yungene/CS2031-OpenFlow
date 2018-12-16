@@ -24,7 +24,7 @@ import cistiakj.Packets.SetConfigPacket;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	A thread of Router that deals with processing of OpenFlow communication. i.e. communication
  *	with the Controller
  */

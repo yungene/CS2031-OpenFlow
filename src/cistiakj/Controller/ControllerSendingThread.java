@@ -9,7 +9,7 @@ import cistiakj.Packets.PacketTypes;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	A helper thread of Controller whose function is to send packets.
  */
 public class ControllerSendingThread  implements Runnable, PacketTypes, Constants {

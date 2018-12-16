@@ -11,7 +11,7 @@ import tcdIO.Terminal;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	A class to represent an End Node. EndPoint can send messages addressed to another endPoint
  *	and Receive message.
  */

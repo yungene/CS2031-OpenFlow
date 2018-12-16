@@ -20,7 +20,7 @@ import cistiakj.Packets.SetConfigPacket;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  * A thread of controller that deals with processing of queries from routers.
  */
 public class ControllerProcessingThread implements Runnable, PacketTypes, Constants {

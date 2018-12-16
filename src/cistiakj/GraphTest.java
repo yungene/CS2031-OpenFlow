@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	A JUnit test to test the methods of Graph class, especially Dijkstra algortihm.
  */
 public class GraphTest {

@@ -21,7 +21,7 @@ import tcdIO.Terminal; // for debugging purpose
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  * OpenFlow controller
  */
 public class Controller implements Runnable, Constants {

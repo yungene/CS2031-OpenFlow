@@ -12,7 +12,7 @@ import cistiakj.Packets.PacketTypes;
 
 /**
  * 
- * @author Jevgenijus Cistiakovas cistiakj@tcd.ie
+ * @author Jevgenijus Cistiakovas 17325426 cistiakj@tcd.ie
  *	A helper thread of Router whose function is to listen for incoming packets
  *	and decide how to deal with that packet. It only support GenericPackets.
  */
